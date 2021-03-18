@@ -84,8 +84,7 @@ const ReadBoard = (props) => {
             <Link to={`/update/${boardInfo.no}`} className='modify' onClick={modifyClick}>
                 수정하기 
             </Link>
-            <button onClick={() => window.history.back()}>돌아가기</button>
-            <p>{boardInfo.hit}</p>
+            <button onClick={() => window.history.back()}>목록보기</button>
         </div>
     )
 }

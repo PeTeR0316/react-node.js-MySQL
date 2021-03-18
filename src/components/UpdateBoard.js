@@ -53,6 +53,14 @@ const UpdateBoard = (props) => {
         window.location.href = '/'; //작성 완료 후 게시글 페이지로 이동
     }
 
+    const historyBack = () => {
+        let confirmValue = window.confirm("현재 작업이 저장되지 않습니다.");
+
+        if(confirmValue) {
+            window.history.back(); 
+        };
+    }
+
     return (
         <div className="updateBoard">
             <form>
@@ -74,7 +82,7 @@ const UpdateBoard = (props) => {
             </form>
 
             <button onClick={update}>수정하기</button>
-            <button onClick={() => window.history.back()}>돌아가기</button>
+            <button onClick={historyBack}>돌아가기</button>
         </div>
     )
 };

@@ -25,7 +25,11 @@ router.get('/project/select', (req, res) => {
 
 //board 테이블 페이지 번호에 따른 리스트 SELECT
 router.get('/select/listchange/:pagenum', (req, res) => {
-    let selectPage = (parseInt(req.params.pagenum) - 1) * 10;
+    let selectPage = 0;
+
+    if(parseInt(req.params.pagenum) > 0) {
+        selectPage = (parseInt(req.params.pagenum) - 1) * 10;
+    }
 
     let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board ORDER BY no DESC LIMIT ${selectPage}, 10;`;
 
@@ -35,11 +39,20 @@ router.get('/select/listchange/:pagenum', (req, res) => {
     })
 });
 
+//게시글 수 구하기
+router.get('/select/count', (req, res) => {
+    let selectSQL = `SELECT count(*) AS count FROM board;`;
+
+    connection.query(selectSQL, (err, rows,fields) => {
+        res.send(rows);
+    })
+});
+
 
 //선택한 게시글 SELECT
 router.get('/select/list/:listnum', (req, res) => {
     let selectPage = req.params.listnum;
-    
+
     let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE no = '${selectPage}';`;
 
     connection.query(selectSQL, (err, rows,fields) => {

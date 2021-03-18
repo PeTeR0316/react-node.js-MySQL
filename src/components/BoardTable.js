@@ -6,7 +6,7 @@ import '../css/boardTable.css';
 
 function BoardTable() {
     const [boardList, setBoardList] = useState([]);
-    const [pageNum, setPageNum] = useState('1');
+    const [count, serCount] = useState() //개시글 수
 
     //게시판 리스트 가져오기
     useEffect(() => {
@@ -16,25 +16,11 @@ function BoardTable() {
 
     },[]);
 
-    const pageChange = (e) => {
-        setPageNum(e.target.textContent);
-    }
-
     //페이지 번호에 따른 게시판 리스트 가져오기
     const pageListChange = async (e) => {
-        await new Promise((resolve, reject) => {
-            setPageNum(e.target.textContent);
-            resolve();
-        })
-        .then(() => {
-            //페이지 번호를 파라미터로 전달
-            fetch(`http://localhost:3001/api/select/listchange/${pageNum}`)
-                .then(res => res.json())
-                .then(data => setBoardList(data));
-        })
-        .catch(() => {
-            alert("페이지를 불러올 수 없습니다.");
-        });
+        fetch(`http://localhost:3001/api/select/listchange/${e.target.textContent}`)
+            .then(res => res.json())
+            .then(data => setBoardList(data));        
     };
 
     // 조회수 업데이트
@@ -55,9 +41,33 @@ function BoardTable() {
 
     //개시글 총 개수 구하는 함수
     const countList = () => {
-        const count = boardList.length;
+        fetch('http://localhost:3001/api/select/count')
+            .then(res => res.json())
+            .then(data => serCount(data[0].count));
+        
         return count;
     }
+
+    //게시물 수에 따른 페이지 번호 생성
+    const pageRange = () => {
+        let range = count / 10;
+        let restList = count % 10;
+        let liElement = [];
+        if(restList !== 0) {
+            range++
+
+            for(let liCnt = 1; liCnt <= range; liCnt++) {
+                liElement[liCnt - 1] = <li onClick={pageListChange}>{liCnt}</li>
+            }
+        } else {
+            for(let liCnt = 1; liCnt <= range; liCnt++) {
+                liElement[liCnt - 1] = <li onClick={pageListChange}>{liCnt}</li>
+            }
+        };
+
+        console.log(liElement);
+        return liElement;
+    };
 
     return (
     <div className="boardTable">
@@ -69,7 +79,6 @@ function BoardTable() {
             <tr>
                 <td>번호</td>
                 <td>제목</td>
-                {/* <td>내용</td> */}
                 <td>작성자</td>
                 <td>작성일</td>
                 <td>조회수</td>
@@ -91,11 +100,7 @@ function BoardTable() {
         </table>
 
         <ul className="boardListNum">
-            <li onClick={pageListChange}>1</li>
-            <li onClick={pageListChange}>2</li>
-            <li onClick={pageListChange}>3</li>
-            <li onClick={pageListChange}>4</li>
-            <li onClick={pageListChange}>5</li>
+            {pageRange()}
         </ul>
 
         <Link to={'/board/write'} className="writeBtn">글쓰기</Link>
