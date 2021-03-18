@@ -35,7 +35,6 @@ router.get('/select/listchange/:pagenum', (req, res) => {
 
     connection.query(selectSQL, (err, rows,fields) => {
         res.send(rows);
-        console.log(req.params.pagenum);
     })
 });
 

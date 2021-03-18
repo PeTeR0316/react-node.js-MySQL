@@ -72,19 +72,26 @@ const ReadBoard = (props) => {
     
     return (
         <div className="readBoard">
-            <p>제목: <sapn>{boardInfo.title}</sapn></p>
-            <p>작성자: <sapn>{boardInfo.id}</sapn></p>
-            <p>내용</p>
-            <div className='contentBox'>
-                {boardInfo.content}
+            <ul>
+                <li className="title">{boardInfo.title}</li>
+                <li className="writer">
+                    {boardInfo.id}
+                    <br />
+                    <span>{boardInfo.ins_date} 조회 {boardInfo.hits}</span>
+                </li>
+                <li className="content">
+                    <div className='contentBox'>
+                        {boardInfo.content}
+                    </div>
+                </li>
+            </ul>
+            <div className="btns">
+                <button onClick={deleteClick}>삭제하기</button>
+                <Link to={`/update/${boardInfo.no}`} className='modify' onClick={modifyClick}>
+                    수정하기 
+                </Link>
+                <button onClick={() => window.history.back()}>목록보기</button>
             </div>
-
-            <br />
-            <button onClick={deleteClick}>삭제하기</button>
-            <Link to={`/update/${boardInfo.no}`} className='modify' onClick={modifyClick}>
-                수정하기 
-            </Link>
-            <button onClick={() => window.history.back()}>목록보기</button>
         </div>
     )
 }

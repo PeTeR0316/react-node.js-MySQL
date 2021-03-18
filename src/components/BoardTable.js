@@ -81,7 +81,7 @@ function BoardTable() {
                 <td>제목</td>
                 <td>작성자</td>
                 <td>작성일</td>
-                <td>조회수</td>
+                <td>조회</td>
             </tr>
             {boardList.map((listInfo, i) => (
                 <tr key={i}>

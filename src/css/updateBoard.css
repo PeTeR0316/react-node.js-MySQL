@@ -1,14 +1,12 @@
-ul {
-    list-style: none;
-    padding: 0;
-}
-
 div.updateBoard {
-    padding: 0 10%;
+    margin: 50px 10%;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
 }
 
-ul > li {
+div.updateBoard > form > ul > li {
     margin-bottom: 5px;
+    border: 1px solid #dddddd;
 }
 
 ul > li > span {
@@ -19,23 +17,38 @@ ul > li > span {
 }
 
 ul > li > input {
+    width: 100%;
     height: 20px;
     line-height: 20px;
+    border: none;
+    outline: none;
 }
 
 ul > li > textarea {
-    width: 500px;
-    height: 300px;
+    width: 100%;
+    height: 700px;
     resize: none;
+    border: none;
 }
-button {
+
+div.btns {
+    border-top: 1px solid #dddddd;
+    padding: 10px 0;
+    text-align: right;
+}
+
+div.btns > button {
+    text-align: right;
     width: 70px;
     height: 30px;
     line-height: 30px;
-    margin-right: 10px;
     background-color: #000;
     color: #fff;
     text-align: center;
     border: none;
     font-weight: bold;
+}
+
+div.btns > button:not(:last-child) {
+    margin-right: 10px;
 }

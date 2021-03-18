@@ -66,23 +66,21 @@ const UpdateBoard = (props) => {
             <form>
                 <ul>
                     <li>
-                        <span>제목: </span>
                         <input type="text" name="title" onChange={changeValue} value={title} />
                     </li>
                     <li>
-                        <span>작성자: </span>
                         <span>{updateBoardInfo.id}</span>
                     </li>
                     <li>
-                        <span>내용</span>
-                        <br />
                         <textarea name="content" onChange={changeValue} value={content} />
                     </li>
                 </ul>
             </form>
 
-            <button onClick={update}>수정하기</button>
-            <button onClick={historyBack}>돌아가기</button>
+            <div className="btns">
+                <button onClick={update}>수정하기</button>
+                <button onClick={historyBack}>돌아가기</button>
+            </div>
         </div>
     )
 };

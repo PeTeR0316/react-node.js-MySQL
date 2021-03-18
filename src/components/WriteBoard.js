@@ -48,27 +48,24 @@ const WriteBoard = () => {
             <form>
                 <ul>
                     <li>
-                        <span>제목</span>
-                        <input type="text" name="title" onChange={changeValue} />
+                        <input type="text" name="title" onChange={changeValue} placeholder="제목을 입력해 주세요" />
                     </li>
                     <li>
-                        <span>작성자</span>
-                        <input type="text" name="id" onChange={changeValue} />
+                        <input type="text" name="id" onChange={changeValue} placeholder="작성자 닉네임" />
                     </li>
                     <li>
-                        <span>비밀번호</span>
-                        <input type="password" name="password" onChange={changeValue} />
+                        <input type="password" name="password" onChange={changeValue} placeholder="비밀번호를 입력해 주세요" />
                     </li>
                     <li>
-                        <span>내용</span>
-                        <br />
-                        <textarea name="content" onChange={changeValue} />
+                        <textarea name="content" onChange={changeValue} placeholder="내용을 입력하세요" />
                     </li>
                 </ul>
             </form>
 
-            <button onClick={write}>작성하기</button>
-            <button onClick={() => window.history.back()}>돌아가기</button>
+            <div className="btns">
+                <button onClick={write}>작성하기</button>
+                <button onClick={() => window.history.back()}>돌아가기</button>
+            </div>
         </div>
     )
 };
