@@ -12,10 +12,6 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-router.get('/',function(req,res){
-
-    res.send({greeting:'Hello'});
-});
 
 //board 테이블 SELECT
 router.get('/project/select', (req, res) => {
@@ -43,7 +39,7 @@ router.get('/select/listchange/:pagenum', (req, res) => {
 //선택한 게시글 SELECT
 router.get('/select/list/:listnum', (req, res) => {
     let selectPage = req.params.listnum;
-
+    
     let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE no = '${selectPage}';`;
 
     connection.query(selectSQL, (err, rows,fields) => {
@@ -99,36 +95,11 @@ router.post('/insert', (req, res) => {
             console.log(Date() + " reset ok!");
         }
     });
-
-    // let resetNoSQL1 = 'alter table board auto_increment=1;' + 'set @COUNT = 0;' + 'update board set no = @COUNT:=@COUNT+1;';
-
-    // let insertData = new Promise((resolve, reject) => {
-    //     connection.query(insertSQL, (err, results, fields) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             console.log(Date() + " insert ok!");
-    //         }
-    //     });
-
-    //     resolve();
-    // })
-
-    // insertData.then(() => {
-    //     connection.query(resetNoSQL1, (err, results, fields) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             console.log(Date() + " reset ok!");
-    //         }
-    //     });
-    // })
 });
 
 //DELETE 쿼리문
 router.post('/delete', (req, res) => {
     const deleteNo = req.body.deleteNo; //게시글 번호
-
     let deleteSQL = `DELETE FROM board WHERE no = '${deleteNo}';`;
 
     connection.query(deleteSQL, (err, results, fields) => {
@@ -185,7 +156,6 @@ router.post('/update', (req, res) => {
     let date = now.getDate();
     let hours = now.getHours();
     let minutes = now.getMinutes();
-
     let updateTime = `${year}-${month}-${date} ${hours}:${minutes}`; //업데이트 시간
 
     let updateSQL = `UPDATE board SET title = '${updateTitle}', content = '${updateContent}', id ='${updateId}', write_time = '${updateTime}' WHERE no = '${indexNo}'`;
@@ -217,8 +187,10 @@ router.post('/hitupdate', (req, res) => {
 
 
 //게시글 작성자 확인
-router.get('/modifyCheck', (req, res) => {
-    let selectSQL = `SELECT password FROM board;`;
+router.get('/modifyCheck/:indexno', (req, res) => {
+    let selectNo = req.params.indexno;
+
+    let selectSQL = `SELECT password FROM board WHERE no = '${selectNo}';`;
 
     connection.query(selectSQL, (err, rows,fields) => {
         res.send(rows);

@@ -12,7 +12,7 @@ const ReadBoard = (props) => {
     useEffect(() => {
         fetch(`http://localhost:3001/api/select/list/${boardNo}`)
             .then(res => res.json())
-            .then(data => setBoardInfo(data)); //클릭 한 게시글 데이터 가져오기
+            .then(data => setBoardInfo(data[0])); //클릭 한 게시글 데이터 가져오기
     },[]);
 
     const modifyClick = (e) => {
@@ -21,11 +21,11 @@ const ReadBoard = (props) => {
         let checkPassword = window.prompt("비밀번호를 입력하세요");
 
         //클릭 한 게시글 비밀번호 가져오기
-        fetch('http://localhost:3001/api/modifyCheck')
+        fetch(`http://localhost:3001/api/modifyCheck/${boardNo}`)
             .then(res => res.json())
             .then(data => {
                 //입력한 비밀번호와 게시글 비밀번호 비교
-                if(checkPassword !== data[boardNo-1].password) {
+                if(checkPassword !== data[0].password) {
                     alert("패스워드가 틀립니다.");
                 } else {
                     window.location.href = `/update/${boardInfo.no}`
@@ -58,11 +58,11 @@ const ReadBoard = (props) => {
         let checkPassword = window.prompt("비밀번호를 입력하세요");
 
         //클릭 한 게시글 비밀번호 가져오기
-        fetch('http://localhost:3001/api/modifyCheck')
+        fetch(`http://localhost:3001/api/modifyCheck/${boardNo}`)
             .then(res => res.json())
             .then(data => {
                 //입력한 비밀번호와 게시글 비밀번호 비교
-                if(checkPassword !== data[boardNo-1].password) {
+                if(checkPassword !== data[0].password) {
                     alert("패스워드가 틀립니다.");
                 } else {
                     deleteBtn()
