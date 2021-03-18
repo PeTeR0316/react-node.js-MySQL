@@ -1,0 +1,72 @@
+div.boardTable {
+    padding: 0 10%;
+}
+
+p.totalCnt {
+    font-size: 14px;
+}
+
+p.totalCnt > span {
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    margin: 0 auto;
+    border : 1px solid #000000;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+tr {
+    border: 1px solid #dddddd;
+    border-top: 1px solid #000;
+    height: 30px;
+    line-height: 30px;
+}
+
+tr:first-child {
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+}
+
+td {
+    border-bottom : 1px solid #dddddd;
+    text-align: center;
+}
+
+td:first-child {
+    width: 40px;
+}
+
+ul.boardListNum {
+    display: inline-block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+ul.boardListNum > li {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+a.writeBtn {
+    display: inline-block;
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+    margin-top: 30px;
+}

@@ -1,0 +1,29 @@
+div.readBoard {
+    padding: 0 10%;
+}
+
+p {
+    height: 20px;
+    line-height: 20px;
+}
+
+a.modify {
+    display: inline-block;
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 10px;
+    vertical-align: top;
+}
+
+div.contentBox {
+    width: 100%;
+    height: 300px;
+    overflow: scroll;
+    border: 1px solid #000;
+}

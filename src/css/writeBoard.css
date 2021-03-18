@@ -1,0 +1,41 @@
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+div.writeBoard {
+    padding: 0 10%;
+}
+
+ul > li {
+    margin-bottom: 5px;
+}
+
+ul > li > span {
+    display: inline-block;
+    width: 70px;
+    height: 20px;
+    line-height: 20px;
+}
+
+ul > li > input {
+    height: 20px;
+    line-height: 20px;
+}
+
+ul > li > textarea {
+    width: 500px;
+    height: 300px;
+    resize: none;
+}
+button {
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    border: none;
+    font-weight: bold;
+}
