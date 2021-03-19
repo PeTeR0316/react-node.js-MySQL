@@ -17,7 +17,7 @@ function App() {
                         <Route exact path='/read/:boardNo' component={ReadBoard} />
                         <Route exact path='/board/write' component={WriteBoard} />
                         <Route exact path='/update/:boardNo' component={UpdateBoard} />
-                        <Route exact path='/upload' component={Upload} />
+                        {/* <Route exact path='/upload' component={Upload} /> */}
                 </Switch>
             </div>
         </Router>

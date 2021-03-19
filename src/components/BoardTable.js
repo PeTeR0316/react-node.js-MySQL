@@ -5,8 +5,10 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import '../css/boardTable.css';
 
 function BoardTable() {
-    const [boardList, setBoardList] = useState([]);
-    const [count, serCount] = useState() //개시글 수
+    const [boardList, setBoardList] = useState([]); //SELECT 값
+    const [count, serCount] = useState(); //개시글 수
+    const [searchValue, setSearchValue] = useState(); //게시글 검색 데이터
+    const [searchSelectValue, setSearchSelectValue] = useState('아이디'); //게시글 검색 데이터
 
     //게시판 리스트 가져오기
     useEffect(() => {
@@ -17,7 +19,7 @@ function BoardTable() {
     },[]);
 
     //페이지 번호에 따른 게시판 리스트 가져오기
-    const pageListChange = async (e) => {
+    const pageListChange = (e) => {
         fetch(`http://localhost:3001/api/select/listchange/${e.target.textContent}`)
             .then(res => res.json())
             .then(data => setBoardList(data));        
@@ -69,6 +71,19 @@ function BoardTable() {
         return liElement;
     };
 
+
+    //검색한 리스트 가져오기
+    const searchList = () => {
+        if(searchValue === "") {
+            alert("검색어를 입력하세요");
+            return;
+        }
+
+        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+            .then(res => res.json())
+            .then(data => setBoardList(data)); 
+    }
+
     return (
     <div className="boardTable">
         <h1 className="mainTitle">전체글보기</h1>
@@ -102,6 +117,14 @@ function BoardTable() {
         <ul className="boardListNum">
             {pageRange()}
         </ul>
+        <div className="searchArea">
+            <select onChange={(e) => setSearchSelectValue(e.target.value)}>
+                <option>아이디</option>
+                <option>제목</option>
+            </select>
+            <input type="text" onChange={(e) => setSearchValue(e.target.value)} />
+            <button className="searchBtn" onClick={searchList}>검색</button>
+        </div>
 
         <Link to={'/board/write'} className="writeBtn">글쓰기</Link>
     </div>
