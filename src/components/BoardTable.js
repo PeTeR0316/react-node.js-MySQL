@@ -87,7 +87,7 @@ function BoardTable() {
                 <tr key={i}>
                     <td>{listInfo.no}</td>
                     <td>
-                        <Link to={`/${listInfo.no}`} onClick={() => {updateHits(listInfo.no, listInfo.hits)}}>
+                        <Link to={`/read/${listInfo.no}`} onClick={() => {updateHits(listInfo.no, listInfo.hits)}}>
                             {listInfo.title}
                         </Link>
                     </td>

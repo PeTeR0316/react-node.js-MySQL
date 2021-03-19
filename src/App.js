@@ -5,6 +5,7 @@ import BoardTable from './components/BoardTable';
 import ReadBoard from './components/ReadBoard';
 import WriteBoard from './components/WriteBoard';
 import UpdateBoard from './components/UpdateBoard'
+import Upload from './components/Upload'
 
 function App() {
 
@@ -13,9 +14,10 @@ function App() {
             <div className="App">
                 <Switch>
                         <Route exact path='/' component={BoardTable} />
-                        <Route exact path='/:boardNo' component={ReadBoard} />
+                        <Route exact path='/read/:boardNo' component={ReadBoard} />
                         <Route exact path='/board/write' component={WriteBoard} />
                         <Route exact path='/update/:boardNo' component={UpdateBoard} />
+                        <Route exact path='/upload' component={Upload} />
                 </Switch>
             </div>
         </Router>

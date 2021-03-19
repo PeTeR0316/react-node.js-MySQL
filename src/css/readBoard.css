@@ -3,10 +3,10 @@ div.readBoard {
     padding: 10px 20px;
     border: 1px solid #dddddd;
 }
-
+/* 
 li {
     padding: 10px 5px;
-}
+} */
 
 li.title {
     font-size: 25px;
