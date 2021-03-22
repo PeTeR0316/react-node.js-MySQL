@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import '../css/writeBoard.css'
 
-const BASE_URL = "http://localhost:3001";
+//const BASE_URL = "http://localhost:3001";
 
 const WriteBoard = () => {
     const [title , setTitle] = useState();
@@ -12,11 +12,10 @@ const WriteBoard = () => {
     const [password, setPassword] = useState();
     const [img, setImage] = useState(null);
 
-    const [contents, setContents] = useState("");
-    const [uploadedImg, setUploadedImg] = useState({
-      fileName: "",
-      fillPath: ""
-    });
+    const [form, setForm] = useState({
+        title: '',
+        file: '',
+    })
 
     const changeValue = (e) => {
         const targetName = e.target.name;
@@ -29,8 +28,9 @@ const WriteBoard = () => {
             setId(e.target.value)
         } else if(targetName === "password") {
             setPassword(e.target.value)
-        } else {
+        } else if(targetName === "img") {
             setImage(e.target.files[0])
+            console.log(e.target.files[0]);
         }
     }
 
@@ -49,21 +49,32 @@ const WriteBoard = () => {
                 'content-type' : 'application/json',
             },
             body: JSON.stringify(insertData)
-        })
-            .then(res => res.json());
-        
+        });
+
         window.location.href = '/'; //작성 완료 후 게시글 페이지로 이동
     }
 
-
     const imageSend = () => {
         document.getElementById('uploadForm').submit();
+    };
+
+
+    const axiosTest = () => {
+        axios.post('http://localhost:3001/image/upload', {
+           sendImg : img,
+        })
+        .then((response) => {
+            console.log(response.data)
+        })
+        .catch((err) => {
+            console.log(err)
+        });
     }
 
 
     return (
         <div className="writeBoard">
-            <form encType="multipart/form-data" className="writeForm">
+            <form id="writeForm" encType="multipart/form-data" action="http://localhost:3001/photos/upload" method="POST" >
                 <ul>
                     <li>
                         <input type="text" name="title" onChange={changeValue} placeholder="제목을 입력해 주세요" />
@@ -75,24 +86,21 @@ const WriteBoard = () => {
                         <input type="password" name="password" onChange={changeValue} placeholder="비밀번호를 입력해 주세요" />
                     </li>
                     <li>
-                        <form
-                            id='uploadForm' 
-                            action='http://localhost:3001/upload' 
-                            method='post' 
-                            encType="multipart/form-data">
-                            <input type="file" name="imageFile" onChange={imageSend} />
-                        </form>  
+                        {/* <form id="uploadForm" action="http://localhost:3001/photos/upload" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="img" onChange={imageSend} />
+                        </form>  */}
+                        <input type="file" name="img" id="img" onChange={changeValue} />
                     </li>
                     <li>
                         <textarea name="content" onChange={changeValue} placeholder="내용을 입력하세요" />
                     </li>
                 </ul>
+                
+                <div className="btns">
+                    <button type="button" onClick={write}>작성하기</button>
+                    <button onClick={() => window.history.back()}>돌아가기</button>
+                </div>
             </form>
-
-            <div className="btns">
-                <button onClick={write}>작성하기</button>
-                <button onClick={() => window.history.back()}>돌아가기</button>
-            </div>
         </div>
     )
 };

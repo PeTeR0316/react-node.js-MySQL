@@ -4,25 +4,50 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import '../css/boardTable.css';
 
-function BoardTable() {
-    const [boardList, setBoardList] = useState([]); //SELECT 값
+const SearchBoard = (props) => {
+    const { keyword, keywordValue } = props.match.params;
+    const [searchBoardList, setSearchBoardList] = useState([]); //SELECT 값
     const [count, serCount] = useState(); //개시글 수
-    const [searchValue, setSearchValue] = useState(null); //게시글 검색 데이터
-    const [searchSelectValue, setSearchSelectValue] = useState('아이디'); //게시글 검색 데이터
+    const [searchValue, setSearchValue] = useState(keyword); //게시글 검색 데이터
+    const [searchSelectValue, setSearchSelectValue] = useState(keywordValue); //게시글 검색 데이터
 
     //게시판 리스트 가져오기
     useEffect(() => {
-        fetch('http://localhost:3001/api/project/select')
+        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/`)
             .then(res => res.json())
-            .then(data => setBoardList(data));
-
+            .then(data => setSearchBoardList(data));
+        
+        countList();
     },[]);
+
+    //개시글 총 개수 구하는 함수
+    const countList = () => {
+        fetch(`http://localhost:3001/api/select/count/${searchValue}/${searchSelectValue}`)
+            .then(res => res.json())
+            .then(data => serCount(data[0].count));
+    }
+
+    //검색한 리스트 가져오기
+    const searchList = () => {
+        setSearchSelectValue(document.getElementsByClassName("searchSelect").value);
+
+        if(searchValue === null || searchValue === "") {
+            alert("검색어를 입력하세요");
+            return;
+        }
+
+        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+            .then(res => res.json())
+            .then(data => setSearchBoardList(data));
+
+        countList();
+    }
 
     //페이지 번호에 따른 게시판 리스트 가져오기
     const pageListChange = (e) => {
-        fetch(`http://localhost:3001/api/select/listchange/${e.target.textContent}`)
+        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/${e.target.textContent}`)
             .then(res => res.json())
-            .then(data => setBoardList(data));        
+            .then(data => setSearchBoardList(data));        
     };
 
     // 조회수 업데이트
@@ -39,15 +64,6 @@ function BoardTable() {
             },
             body: JSON.stringify(updateData)
         })
-    }
-
-    //개시글 총 개수 구하는 함수
-    const countList = () => {
-        fetch('http://localhost:3001/api/select/count')
-            .then(res => res.json())
-            .then(data => serCount(data[0].count));
-        
-        return count;
     }
 
     //게시물 수에 따른 페이지 번호 생성
@@ -71,28 +87,11 @@ function BoardTable() {
         return liElement;
     };
 
-
-    //검색한 리스트 가져오기
-    const searchList = () => {
-        if(searchValue === null || searchValue === "") {
-            alert("검색어를 입력하세요");
-            return;
-        }
-
-        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
-            .then(res => res.json())
-            .then(data => setBoardList(data));
-        
-        window.location.href = `/search/${searchValue}/${searchSelectValue}`
-    }
-
     return (
     <div className="boardTable">
-        <Link to={`/`}>
-            <h1 className="mainTitle">전체글보기</h1>
-        </Link>
+        <h1 className="mainTitle">{keyword} 검색리스트</h1>
         <p className="totalCnt">
-            <span>{countList()}</span>개의 글
+            <span>{count}</span>개의 글
         </p>
         <table>
             <tr>
@@ -102,7 +101,7 @@ function BoardTable() {
                 <td>작성일</td>
                 <td>조회</td>
             </tr>
-            {boardList.map((listInfo, i) => (
+            {searchBoardList.map((listInfo, i) => (
                 <tr key={i}>
                     <td>{listInfo.no}</td>
                     <td>
@@ -121,12 +120,13 @@ function BoardTable() {
         <ul className="boardListNum">
             {pageRange()}
         </ul>
+
         <div className="searchArea">
-            <select onChange={(e) => setSearchSelectValue(e.target.value)}>
+            <select className="searchSelect" value={searchSelectValue} onChange={(e) => setSearchSelectValue(e.target.value)}>
                 <option>아이디</option>
                 <option>제목</option>
             </select>
-            <input type="text" onChange={(e) => setSearchValue(e.target.value)} />
+            <input type="text" value={keyword} onChange={(e) => setSearchValue(e.target.value)} />
             <button className="searchBtn" onClick={searchList}>검색</button>
         </div>
 
@@ -135,4 +135,4 @@ function BoardTable() {
     );
 }
 
-export default BoardTable;
+export default SearchBoard;

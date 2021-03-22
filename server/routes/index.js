@@ -1,7 +1,23 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+const fileUpload = require('express-fileupload');
 
+//multer
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/')
+    },
+    filename: (req, file, cb) =>{
+        cb(null, Date.now() + '_' + file.originalname)
+    }
+});
+const upload = multer({ storage: storage});
+
+
+// default options
+express().use(fileUpload());
 
 //데이터베이스 연결
 const connection = mysql.createConnection({
@@ -12,10 +28,9 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-
 //board 테이블 SELECT
 router.get('/project/select', (req, res) => {
-    let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board ORDER BY no DESC LIMIT 0, 10;`;
+    let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %H:%i') as 'ins_date', hits FROM board ORDER BY no DESC LIMIT 0, 15;`;
 
     connection.query(selectSQL, (err, rows,fields) => {
         res.send(rows);
@@ -28,17 +43,72 @@ router.get('/select/listchange/:pagenum', (req, res) => {
     let selectPage = 0;
 
     if(parseInt(req.params.pagenum) > 0) {
-        selectPage = (parseInt(req.params.pagenum) - 1) * 10;
+        selectPage = (parseInt(req.params.pagenum) - 1) * 15;
     }
 
-    let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board ORDER BY no DESC LIMIT ${selectPage}, 10;`;
+    let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board ORDER BY no DESC LIMIT ${selectPage}, 15;`;
 
     connection.query(selectSQL, (err, rows,fields) => {
         res.send(rows);
     })
 });
 
-//게시글 수 구하기
+//검색한 게시글 SELECT
+router.get('/select/searchlist/:searchValue/:searchSelectValue', (req, res) => {
+    let selectSearchValue = req.params.searchValue; //검색 키워드
+    let searchSelectValue = req.params.searchSelectValue; //검색 종류
+    let selectPage = 0;
+
+    if(parseInt(req.params.pagenum) > 0) {
+        selectPage = (parseInt(req.params.pagenum) - 1) * 15;
+    }
+
+    if (searchSelectValue == "아이디") {
+        let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE id = '${selectSearchValue}' ORDER BY no DESC LIMIT ${selectPage}, 15;`;
+
+        connection.query(selectSQL, (err, rows,fields) => {
+            res.send(rows);
+            console.log(Date() + " 검색한 게시글 SELECT ok!");
+        })
+    } else if (searchSelectValue == "제목") {
+        let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE title LIKE '%${selectSearchValue}%' ORDER BY no DESC LIMIT ${selectPage}, 15;`;
+
+        connection.query(selectSQL, (err, rows,fields) => {
+            res.send(rows);
+            console.log(Date() + " 검색한 게시글 SELECT ok!");
+        })
+    }
+});
+
+//검색한 게시글 페이지 번호에 따른 리스트 SELECT
+router.get('/select/searchlist/:searchValue/:searchSelectValue/:pagenum', (req, res) => {
+    let selectSearchValue = req.params.searchValue; //검색 키워드
+    let searchSelectValue = req.params.searchSelectValue; //검색 종류
+    let selectPage = 0;
+
+    if(parseInt(req.params.pagenum) > 0) {
+        selectPage = (parseInt(req.params.pagenum) - 1) * 15;
+    }
+
+    if (searchSelectValue == "아이디") {
+        let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE id = '${selectSearchValue}' ORDER BY no DESC LIMIT ${selectPage}, 15;`;
+
+        connection.query(selectSQL, (err, rows,fields) => {
+            res.send(rows);
+            console.log(Date() + " 검색한 게시글 페이지 SELECT ok!");
+        })
+    } else if (searchSelectValue == "제목") {
+        let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE title LIKE '%${selectSearchValue}%' ORDER BY no DESC LIMIT ${selectPage}, 15;`;
+
+        connection.query(selectSQL, (err, rows,fields) => {
+            res.send(rows);
+            console.log(Date() + " 검색한 게시글 페이지 SELECT ok!");
+        })
+    }
+});
+
+
+//전체 게시글 수 구하기
 router.get('/select/count', (req, res) => {
     let selectSQL = `SELECT count(*) AS count FROM board;`;
 
@@ -47,18 +117,43 @@ router.get('/select/count', (req, res) => {
     })
 });
 
+//검색한 게시글 수 구하기
+router.get('/select/count/:searchValue/:searchSelectValue', (req, res) => {
+    let selectSearchValue = req.params.searchValue; //검색 키워드
+    let searchSelectValue = req.params.searchSelectValue; //검색 종류
+
+    let selectSQL = `SELECT count(*) AS count FROM board;`;
+
+    if (searchSelectValue == "아이디") {
+        let selectSQL = `SELECT count(*) AS count FROM board WHERE id = '${selectSearchValue}';`;
+
+        connection.query(selectSQL, (err, rows,fields) => {
+            res.send(rows);
+            console.log(Date() + " 검색한 게시글 count ok!");
+        })
+    } else if (searchSelectValue == "제목") {
+        let selectSQL = `SELECT count(*) AS count FROM board WHERE title LIKE '%${selectSearchValue}%';`;
+
+        connection.query(selectSQL, (err, rows,fields) => {
+            res.send(rows);
+            console.log(Date() + " 검색한 게시글 count ok!");
+        })
+    }
+});
+
 
 //선택한 게시글 SELECT
 router.get('/select/list/:listnum', (req, res) => {
-    let selectPage = req.params.listnum;
+    let selectList = req.params.listnum;
 
-    let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE no = '${selectPage}';`;
+    let selectSQL = `SELECT no, title, content, id, date_format(write_time, '%Y-%m-%d %h:%i') as 'ins_date', hits FROM board WHERE no = '${selectList}';`;
 
     connection.query(selectSQL, (err, rows,fields) => {
         res.send(rows);
         console.log(Date() + "선택한 게시글 SELECT ok!");
     })
 });
+
 
 //INSERT 쿼리문
 router.post('/insert', (req, res) => {
