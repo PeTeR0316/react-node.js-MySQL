@@ -43,13 +43,9 @@ const WriteBoard = () => {
             inPassword : password,
         };
 
-        fetch('http://localhost:3001/api/insert', {
-            method: 'post',
-            headers: {
-                'content-type' : 'application/json',
-            },
-            body: JSON.stringify(insertData)
-        });
+        axios.post('http://localhost:3001/api/insert',insertData)
+        .then(() => {console.log('게시글 작성')})
+        .catch(err => console.log(err));
 
         window.location.href = '/'; //작성 완료 후 게시글 페이지로 이동
     }
@@ -89,10 +85,10 @@ const WriteBoard = () => {
                         {/* <form id="uploadForm" action="http://localhost:3001/photos/upload" method="POST" enctype="multipart/form-data">
                             <input type="file" name="img" onChange={imageSend} />
                         </form>  */}
-                        <input type="file" name="img" id="img" onChange={changeValue} />
+                        <input className="sendFile" type="file" name="img" id="img" onChange={changeValue} placeholder="파일 업로드" />
                     </li>
                     <li>
-                        <textarea name="content" onChange={changeValue} placeholder="내용을 입력하세요" />
+                        <textarea className="contentArea" name="content" onChange={changeValue} placeholder="내용을 입력하세요" />
                     </li>
                 </ul>
                 

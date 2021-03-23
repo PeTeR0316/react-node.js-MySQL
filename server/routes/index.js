@@ -1,20 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var mysql = require('mysql');
+const express = require('express');
+const router = express.Router();
+const mysql = require('mysql');
 const fileUpload = require('express-fileupload');
-
-//multer
-const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/')
-    },
-    filename: (req, file, cb) =>{
-        cb(null, Date.now() + '_' + file.originalname)
-    }
-});
-const upload = multer({ storage: storage});
-
 
 // default options
 express().use(fileUpload());

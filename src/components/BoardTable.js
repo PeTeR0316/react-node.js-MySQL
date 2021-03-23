@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import axios from 'axios';
 
 import '../css/boardTable.css';
 
@@ -12,17 +13,25 @@ function BoardTable() {
 
     //게시판 리스트 가져오기
     useEffect(() => {
-        fetch('http://localhost:3001/api/project/select')
-            .then(res => res.json())
-            .then(data => setBoardList(data));
+        // fetch('http://localhost:3001/api/project/select')
+        //     .then(res => res.json())
+        //     .then(data => setBoardList(data));
+
+        axios.get('http://localhost:3001/api/project/select')
+            .then(response => setBoardList(response.data))
+            .catch(err => console.log(err));
 
     },[]);
 
     //페이지 번호에 따른 게시판 리스트 가져오기
     const pageListChange = (e) => {
-        fetch(`http://localhost:3001/api/select/listchange/${e.target.textContent}`)
-            .then(res => res.json())
-            .then(data => setBoardList(data));        
+        // fetch(`http://localhost:3001/api/select/listchange/${e.target.textContent}`)
+        //     .then(res => res.json())
+        //     .then(data => setBoardList(data));       
+            
+        axios.get(`http://localhost:3001/api/select/listchange/${e.target.textContent}`)
+            .then(response => setBoardList(response.data))
+            .catch(err => console.log(err));
     };
 
     // 조회수 업데이트
@@ -32,20 +41,28 @@ function BoardTable() {
             inHits : boardHits,
         };
 
-        fetch('http://localhost:3001/api/hitupdate', {
-            method: 'post',
-            headers: {
-                'content-type' : 'application/json',
-            },
-            body: JSON.stringify(updateData)
-        })
+        // fetch('http://localhost:3001/api/hitupdate', {
+        //     method: 'post',
+        //     headers: {
+        //         'content-type' : 'application/json',
+        //     },
+        //     body: JSON.stringify(updateData)
+        // });
+
+        axios.post('http://localhost:3001/api/hitupdate',updateData)
+            .then(() => {console.log('update')})
+            .catch(err => console.log(err));
     }
 
-    //개시글 총 개수 구하는 함수
+    //게시글 총 개수 구하는 함수
     const countList = () => {
-        fetch('http://localhost:3001/api/select/count')
-            .then(res => res.json())
-            .then(data => serCount(data[0].count));
+        // fetch('http://localhost:3001/api/select/count')
+        //     .then(res => res.json())
+        //     .then(data => serCount(data[0].count));
+
+        axios.get('http://localhost:3001/api/select/count')
+            .then(response => serCount(response.data[0].count))
+            .catch(err => console.log(err));
         
         return count;
     }
@@ -67,10 +84,8 @@ function BoardTable() {
             }
         };
 
-        console.log(liElement);
         return liElement;
     };
-
 
     //검색한 리스트 가져오기
     const searchList = () => {
@@ -79,9 +94,13 @@ function BoardTable() {
             return;
         }
 
-        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
-            .then(res => res.json())
-            .then(data => setBoardList(data));
+        // fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+        //     .then(res => res.json())
+        //     .then(data => setBoardList(data));
+
+        axios.get(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+            .then(response => setBoardList(response.data))
+            .catch(err => console.log(err));
         
         window.location.href = `/search/${searchValue}/${searchSelectValue}`
     }
@@ -136,3 +155,5 @@ function BoardTable() {
 }
 
 export default BoardTable;
+
+

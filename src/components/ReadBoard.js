@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 import '../css/readBoard.css'
@@ -10,9 +11,9 @@ const ReadBoard = (props) => {
     //const [writepassword, setWritePassword] = useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:3001/api/select/list/${boardNo}`)
-            .then(res => res.json())
-            .then(data => setBoardInfo(data[0])); //클릭 한 게시글 데이터 가져오기
+        axios.get(`http://localhost:3001/api/select/list/${boardNo}`)
+            .then(response => setBoardInfo(response.data[0])) //클릭 한 게시글 데이터 가져오기
+            .catch(err => console.log(err))
     },[]);
 
     const modifyClick = (e) => {
@@ -21,16 +22,15 @@ const ReadBoard = (props) => {
         let checkPassword = window.prompt("비밀번호를 입력하세요");
 
         //클릭 한 게시글 비밀번호 가져오기
-        fetch(`http://localhost:3001/api/modifyCheck/${boardNo}`)
-            .then(res => res.json())
-            .then(data => {
+        axios.get(`http://localhost:3001/api/modifyCheck/${boardNo}`)
+            .then(response => {
                 //입력한 비밀번호와 게시글 비밀번호 비교
-                if(checkPassword !== data[0].password) {
+                if(checkPassword !== response.data[0].password) {
                     alert("패스워드가 틀립니다.");
                 } else {
                     window.location.href = `/update/${boardInfo.no}`
                 }
-            });
+            })
     }
 
     //게시글 삭제
@@ -39,15 +39,9 @@ const ReadBoard = (props) => {
             deleteNo : boardNo,
         };
 
-        fetch('http://localhost:3001/api/delete', {
-            method: 'post',
-            headers: {
-                'content-type' : 'application/json',
-            },
-            body: JSON.stringify(deleteData)
-        })
-            .then(res => res.json());
-
+        axios.post('http://localhost:3001/api/delete', deleteData)
+            .then(() => {console.log('delete')})
+            .catch(err => console.log(err));
 
         window.location.href = '/'; //삭제 후 게시글 페이지로 이동
     };
@@ -58,16 +52,15 @@ const ReadBoard = (props) => {
         let checkPassword = window.prompt("비밀번호를 입력하세요");
 
         //클릭 한 게시글 비밀번호 가져오기
-        fetch(`http://localhost:3001/api/modifyCheck/${boardNo}`)
-            .then(res => res.json())
-            .then(data => {
-                //입력한 비밀번호와 게시글 비밀번호 비교
-                if(checkPassword !== data[0].password) {
-                    alert("패스워드가 틀립니다.");
-                } else {
-                    deleteBtn()
-                }
-            });
+        axios.get(`http://localhost:3001/api/modifyCheck/${boardNo}`)
+        .then(response => {
+            //입력한 비밀번호와 게시글 비밀번호 비교
+            if(checkPassword !== response.data[0].password) {
+                alert("패스워드가 틀립니다.");
+            } else {
+                deleteBtn()
+            }
+        })
     }  
     
     return (

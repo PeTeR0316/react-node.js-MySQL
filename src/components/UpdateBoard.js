@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import axios from 'axios';
+
 import '../css/updateBoard.css'
 
 const UpdateBoard = (props) => {
@@ -10,13 +12,12 @@ const UpdateBoard = (props) => {
 
     useEffect(() => {
         //클릭 한 게시글 데이터 가져오기
-        fetch(`http://localhost:3001/api/select/list/${boardNo}`)
-            .then(res => res.json())
-            .then(data => {
-                setUpdateBoardInfo(data[0]);
-                setTitle(data[0].title);
-                setContent(data[0].content);
-            });
+        axios.get(`http://localhost:3001/api/select/list/${boardNo}`)
+            .then(response => {
+                setUpdateBoardInfo(response.data[0]);
+                setTitle(response.data[0].title);
+                setContent(response.data[0].content);
+            })
     },[]);
 
     const changeValue = (e) => {
@@ -41,14 +42,9 @@ const UpdateBoard = (props) => {
             indexNo : boardNo,
         };
 
-        fetch('http://localhost:3001/api/update', {
-            method: 'post',
-            headers: {
-                'content-type' : 'application/json',
-            },
-            body: JSON.stringify(updateData)
-        })
-            .then(res => res.json());
+        axios.post('http://localhost:3001/api/update',updateData)
+            .then(() => {console.log('update')})
+            .catch(err => console.log(err));
         
         window.location.href = '/'; //작성 완료 후 게시글 페이지로 이동
     }

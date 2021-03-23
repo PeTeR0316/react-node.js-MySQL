@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import axios from 'axios'
 
 import '../css/boardTable.css';
 
 const SearchBoard = (props) => {
     const { keyword, keywordValue } = props.match.params;
     const [searchBoardList, setSearchBoardList] = useState([]); //SELECT 값
-    const [count, serCount] = useState(); //개시글 수
+    const [count, setCount] = useState(); //개시글 수
     const [searchValue, setSearchValue] = useState(keyword); //게시글 검색 데이터
     const [searchSelectValue, setSearchSelectValue] = useState(keywordValue); //게시글 검색 데이터
 
     //게시판 리스트 가져오기
     useEffect(() => {
-        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/`)
-            .then(res => res.json())
-            .then(data => setSearchBoardList(data));
+        // fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/`)
+        //     .then(res => res.json())
+        //     .then(data => setSearchBoardList(data));
+
+        axios.get(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+            .then(response => setSearchBoardList(response.data))
+            .catch(err => console.log(err));
         
         countList();
     },[]);
 
-    //개시글 총 개수 구하는 함수
+    //게시글 총 개수 구하는 함수
     const countList = () => {
-        fetch(`http://localhost:3001/api/select/count/${searchValue}/${searchSelectValue}`)
-            .then(res => res.json())
-            .then(data => serCount(data[0].count));
+        // fetch(`http://localhost:3001/api/select/count/${searchValue}/${searchSelectValue}`)
+        //     .then(res => res.json())
+        //     .then(data => setCount(data[0].count));
+
+        axios.get(`http://localhost:3001/api/select/count/${searchValue}/${searchSelectValue}`)
+            .then(response => setCount(response.data[0].count))
+            .catch(err => console.log(err));
     }
 
     //검색한 리스트 가져오기
@@ -36,18 +45,26 @@ const SearchBoard = (props) => {
             return;
         }
 
-        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
-            .then(res => res.json())
-            .then(data => setSearchBoardList(data));
+        // fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+        //     .then(res => res.json())
+        //     .then(data => setSearchBoardList(data));
+
+        axios.get(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}`)
+            .then(response => setSearchBoardList(response.data))
+            .catch(err => console.log(err));
 
         countList();
     }
 
     //페이지 번호에 따른 게시판 리스트 가져오기
     const pageListChange = (e) => {
-        fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/${e.target.textContent}`)
-            .then(res => res.json())
-            .then(data => setSearchBoardList(data));        
+        // fetch(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/${e.target.textContent}`)
+        //     .then(res => res.json())
+        //     .then(data => setSearchBoardList(data));        
+
+        axios.get(`http://localhost:3001/api/select/searchlist/${searchValue}/${searchSelectValue}/${e.target.textContent}`)
+            .then(response => setSearchBoardList(response.data))
+            .catch(err => console.log(err));
     };
 
     // 조회수 업데이트
@@ -83,7 +100,6 @@ const SearchBoard = (props) => {
             }
         };
 
-        console.log(liElement);
         return liElement;
     };
 
